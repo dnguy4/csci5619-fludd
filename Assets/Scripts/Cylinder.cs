@@ -5,12 +5,16 @@ using System;
 
 public class Cylinder : MonoBehaviour
 {
-	public Action<Collider, Collider> onTriggerEntered;
+	public Action<GameObject, GameObject> onTriggerEntered;
+	public Action<GameObject, GameObject> onTriggerExited;
 	public HashSet<GameObject> currentCollisions;
 	public float radius;
+
+	Collider myCollider; 
 	// Start is called before the first frame update
 	void Start()
 	{
+		myCollider = GetComponent<Collider>();
 		currentCollisions = new HashSet<GameObject>();
 		radius = transform.localScale.x;
 	}
@@ -27,35 +31,26 @@ public class Cylinder : MonoBehaviour
 		radius = newRadius;
     }
 
-	public static void ModifyOpacity(GameObject obj, float newOpacity)
-    {
-		Renderer r = obj.GetComponent<Renderer>();
-		Color oldColor = r.material.color;
-		Color newColor = new Color(oldColor.r, oldColor.g, oldColor.b, newOpacity);
-		r.material.SetColor("_Color", newColor);
-	}
-
 	private void OnTriggerEnter(Collider other)
 	{
+		if (!other.GetComponent<Outline>()) return;
 		currentCollisions.Add(other.gameObject);
-		ModifyOpacity(other.gameObject, 0.5f);
 
 		// If there are any listeners...
 		if (onTriggerEntered != null)
 		{
 			// ...broadcast the callback.
-			onTriggerEntered(GetComponent<Collider>(), other);
+			onTriggerEntered(gameObject, other.gameObject);
 		}
 	}
 
 	private void OnTriggerExit(Collider other)
 	{
+		if (!other.GetComponent<Outline>()) return;
 		currentCollisions.Remove(other.gameObject);
-
-		ModifyOpacity(other.gameObject, 1f);
-		foreach (GameObject gObject in currentCollisions)
+		if (onTriggerExited != null)
 		{
-			print(gObject.name);
+			onTriggerExited(gameObject, other.gameObject);
 		}
 	}
 
@@ -63,8 +58,8 @@ public class Cylinder : MonoBehaviour
     {
 		foreach (GameObject g in currentCollisions)
         {
-			ModifyOpacity(g, 1f);
-        }
+			onTriggerExited(gameObject, g);
+		}
 		currentCollisions.Clear();
     }
 }

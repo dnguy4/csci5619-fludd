@@ -5,8 +5,8 @@ using UnityEngine.InputSystem;
 
 public class ApertureSelector : MonoBehaviour
 {
-    public Cylinder flashlight; //capsule instead of cone for simplicity?
-    public Transform selectionPlane;
+    public Cylinder flashlight;
+    public Cylinder selectionPlane;
     public InputActionProperty toggleFlashAction;
 
     public Transform nonDominantHand;
@@ -14,26 +14,33 @@ public class ApertureSelector : MonoBehaviour
     bool isOn = false;
 
     float selectionDepth = 1;
+    float alphaHide = 0.5f;
 
     // Start is called before the first frame update
     void Start()
     {
         flashlight.gameObject.SetActive(isOn);
         toggleFlashAction.action.performed += ToggleFlash;
+
+        flashlight.onTriggerEntered += OnFlashlightEnter;
+        selectionPlane.onTriggerEntered += ShowOutline;
+
+        flashlight.onTriggerExited += OnFlashlightExit;
+        selectionPlane.onTriggerExited += HideOutline;
     }
 
     public void ToggleFlash(InputAction.CallbackContext context)
     {
         isOn = !isOn;
+        if (!isOn) //Just turned off flashlight, grab selection
+        { 
+            foreach (GameObject s in selectionPlane.currentCollisions)
+            {
+                Debug.Log(s.name);
+            }
+        }
+
         flashlight.gameObject.SetActive(isOn);
-        if (isOn)
-        {
-            flashlight.onTriggerEntered += OnTriggerEntered;
-        }
-        else
-        {
-            flashlight.onTriggerEntered -= OnTriggerEntered;
-        }
        
     }
 
@@ -51,21 +58,43 @@ public class ApertureSelector : MonoBehaviour
 
             if (depth != selectionDepth)
             {
-                Vector3 pos = selectionPlane.localPosition;
+                Vector3 pos = selectionPlane.transform.localPosition;
                 pos.y = selectionDepth;
-                selectionPlane.localPosition = pos;
+                selectionPlane.transform.localPosition = pos;
                 selectionDepth = depth;
             }
         }
 
     }
 
-    void ScanCone()
+    public static void ModifyOpacity(GameObject obj, float newOpacity)
     {
-        //Physics.SphereCastAll(transform.position, coneRange, transform.forward, 2f, layerMask);
+        Renderer r = obj.GetComponent<Renderer>();
+        Color oldColor = r.material.color;
+        Color newColor = new Color(oldColor.r, oldColor.g, oldColor.b, newOpacity);
+        r.material.SetColor("_Color", newColor);
     }
-    private void OnTriggerEntered(Collider trigger, Collider collider)
-    {
 
+    private void OnFlashlightEnter(GameObject trigger, GameObject other)
+    {
+        ModifyOpacity(other, alphaHide);
+    }
+    private void OnFlashlightExit(GameObject trigger, GameObject other)
+    {
+        ModifyOpacity(other, 1);
+    }
+
+    private void ShowOutline(GameObject trigger, GameObject other)
+    {
+        Outline o = other.GetComponent<Outline>();
+        if (o) o.enabled = true;
+        ModifyOpacity(other, 1);
+    }
+
+    private void HideOutline(GameObject trigger, GameObject other)
+    {
+        Outline o = other.GetComponent<Outline>();
+        if (o) o.enabled = false;
+        ModifyOpacity(other, alphaHide);
     }
 }

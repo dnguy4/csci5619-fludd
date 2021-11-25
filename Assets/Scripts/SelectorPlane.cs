@@ -23,10 +23,8 @@ public class SelectorPlane : MonoBehaviour
 	private void OnTriggerEnter(Collider other)
 	{
 		currentCollisions.Add(other.gameObject);
-		Cylinder.ModifyOpacity(other.gameObject, 1f);
 
 		Outline o = other.GetComponent<Outline>();
-		Debug.Log(o);
 		if (o) o.enabled = true;
 
 		// If there are any listeners...
@@ -40,7 +38,6 @@ public class SelectorPlane : MonoBehaviour
 	private void OnTriggerExit(Collider other)
 	{
 		currentCollisions.Remove(other.gameObject);
-		Cylinder.ModifyOpacity(other.gameObject, 0.5f);
 		Outline o = other.GetComponent<Outline>();
 		if (o) o.enabled = false;
 	}
