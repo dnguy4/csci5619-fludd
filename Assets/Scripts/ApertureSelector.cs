@@ -5,33 +5,67 @@ using UnityEngine.InputSystem;
 
 public class ApertureSelector : MonoBehaviour
 {
-    //public float coneAngle;
-    //public float coneRange;
-    //public LayerMask layerMask;
+    public Cylinder flashlight; //capsule instead of cone for simplicity?
+    public Transform selectionPlane;
+    public InputActionProperty toggleFlashAction;
 
-    public Cone flashlight;
-    public InputActionProperty adjustWidth;
+    public Transform nonDominantHand;
+    public Transform dominantHand;
     bool isOn = false;
+
+    float selectionDepth = 1;
 
     // Start is called before the first frame update
     void Start()
     {
-        //flashlight.gameObject.SetActive(isOn);
+        flashlight.gameObject.SetActive(isOn);
+        toggleFlashAction.action.performed += ToggleFlash;
+    }
+
+    public void ToggleFlash(InputAction.CallbackContext context)
+    {
+        isOn = !isOn;
+        flashlight.gameObject.SetActive(isOn);
+        if (isOn)
+        {
+            flashlight.onTriggerEntered += OnTriggerEntered;
+        }
+        else
+        {
+            flashlight.onTriggerEntered -= OnTriggerEntered;
+        }
+       
     }
 
     // Update is called once per frame
     void Update()
     {
-        float x = adjustWidth.action.ReadValue<Vector2>().x;
-        if (Mathf.Abs(x) > 0.2f)
+        if (isOn)
         {
-            float newRadius = flashlight.radius + 0.2f * x * Time.deltaTime;
-            flashlight.ModifyVertices(newRadius, flashlight.height);
+            float x = Mathf.Abs(nonDominantHand.localPosition.x - dominantHand.localPosition.x);
+            float depth = nonDominantHand.localPosition.z * 5f;
+            if (x != flashlight.radius)
+            {
+                flashlight.ModifyRadius(x);
+            }
+
+            if (depth != selectionDepth)
+            {
+                Vector3 pos = selectionPlane.localPosition;
+                pos.y = selectionDepth;
+                selectionPlane.localPosition = pos;
+                selectionDepth = depth;
+            }
         }
+
     }
 
     void ScanCone()
     {
         //Physics.SphereCastAll(transform.position, coneRange, transform.forward, 2f, layerMask);
+    }
+    private void OnTriggerEntered(Collider trigger, Collider collider)
+    {
+
     }
 }

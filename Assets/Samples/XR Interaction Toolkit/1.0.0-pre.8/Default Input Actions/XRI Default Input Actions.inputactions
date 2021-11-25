@@ -154,6 +154,14 @@
                     "expectedControlType": "Vector2",
                     "processors": "",
                     "interactions": ""
+                },
+                {
+                    "name": "A Button",
+                    "type": "Button",
+                    "id": "d9c69f07-4186-4b1b-a077-5a376aa83152",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
                 }
             ],
             "bindings": [
@@ -475,6 +483,17 @@
                     "action": "Translate Anchor",
                     "isComposite": false,
                     "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "b597bf0c-bf5b-4f68-8e1d-6eae96c6f6f1",
+                    "path": "<XRController>{LeftHand}/primaryButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Generic XR Controller",
+                    "action": "A Button",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         },

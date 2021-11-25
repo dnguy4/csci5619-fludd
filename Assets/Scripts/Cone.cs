@@ -1,7 +1,9 @@
 using UnityEngine;
+using System;
 using System.Collections;
 
 [RequireComponent (typeof (MeshFilter))]
+[RequireComponent(typeof(Collider))]
 public class Cone : MonoBehaviour {
 
 	public int subdivisions = 5;
@@ -10,6 +12,9 @@ public class Cone : MonoBehaviour {
 
 	Mesh coneMesh;
 	MeshCollider coneCollider;
+
+	// This callback is broadcast to all listeners during OnTriggerEnter.
+	public Action<Collider, Collider> onTriggerEntered;
 
 	void Start () {
 		coneMesh = Create(subdivisions, radius, height);
@@ -101,16 +106,21 @@ public class Cone : MonoBehaviour {
 		Debug.Log("Hit " + other.name);
 		Renderer r = other.GetComponent<Renderer>();
 		Color oldColor = r.material.color;
-		Debug.Log(oldColor);
 		Color newColor = new Color(oldColor.r, oldColor.g, oldColor.b, 0.5f);
 		r.material.SetColor("_Color", newColor);
-    }
+
+		// If there are any listeners...
+		if (onTriggerEntered != null)
+		{
+			// ...broadcast the callback.
+			onTriggerEntered(GetComponent<Collider>(), other);
+		}
+	}
 
     private void OnTriggerExit(Collider other)
     {
 		Renderer r = other.GetComponent<Renderer>();
 		Color oldColor = r.material.color;
-		Debug.Log(oldColor);
 		Color newColor = new Color(oldColor.r, oldColor.g, oldColor.b, 1f);
 		r.material.SetColor("_Color", newColor);
 	}
