@@ -58,7 +58,10 @@ public class Cylinder : MonoBehaviour
     {
 		foreach (GameObject g in currentCollisions)
         {
-			onTriggerExited(gameObject, g);
+			if (onTriggerExited != null && g)
+            {
+				onTriggerExited(gameObject, g);
+			}
 		}
 		currentCollisions.Clear();
     }
