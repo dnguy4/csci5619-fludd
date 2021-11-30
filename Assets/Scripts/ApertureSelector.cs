@@ -234,6 +234,10 @@ public class ApertureSelector : MonoBehaviour
     {
         Outline o = other.GetComponent<Outline>();
         if (o) o.enabled = false;
-        ModifyOpacity(other, alphaHide);
+        if (flashlight.currentCollisions.Contains(other))
+        {
+            ModifyOpacity(other, alphaHide);
+        }
+        //ModifyOpacity(other, alphaHide);
     }
 }
