@@ -8,18 +8,26 @@ public class ApertureSelector : MonoBehaviour
     public Cylinder flashlight;
     public Cylinder selectionPlane;
     public InputActionProperty toggleFlashAction;
-    public InputActionProperty snapeForwardAction;
+    public InputActionProperty snapForwardAction;
+    public InputActionProperty toggleSnapAction;
 
     public Transform nonDominantHand;
     public Transform dominantHand;
-
     bool isOn = false;
+
+    //Spatial Select Params
     bool setToClosest = false;
     float selectionDepth = 1;
     float startingDepth = 0;
     float alphaHide = 0.5f;
 
-    SortedSet<float> snapDepths;
+    //Snap Select Params
+    float[] snapDepths;
+    float planeHeight;
+    bool lockedIn = false;
+    bool snapMode = false;
+    bool snapIntiated = false;
+    int curIndex = 0;
 
     // Start is called before the first frame update
     void Start()
@@ -32,17 +40,22 @@ public class ApertureSelector : MonoBehaviour
 
         flashlight.onTriggerExited += OnFlashlightExit;
         selectionPlane.onTriggerExited += HideOutline;
+
+        planeHeight = selectionPlane.transform.localScale.y * flashlight.transform.localScale.y;
+
+        toggleSnapAction.action.performed += ToggleSnap;
     }
 
     public void ToggleFlash(InputAction.CallbackContext context)
     {
         isOn = !isOn;
-        if (isOn) //Just turned on flashlight
+        if (isOn) //Just turned on flashlight, configure
         {
             setToClosest = true;
         } 
         else //Just turned off flashlight, doing selection
-        { 
+        {
+            snapMode = lockedIn = false;
             foreach (GameObject s in selectionPlane.currentCollisions)
             {
                 Debug.Log(s.name);
@@ -53,7 +66,23 @@ public class ApertureSelector : MonoBehaviour
        
     }
 
-    // Update is called once per frame
+    public void ToggleSnap(InputAction.CallbackContext context)
+    {
+        if (snapMode && lockedIn)
+        {
+            ToggleFlash(context);
+        }
+        else if (snapMode && !lockedIn)
+        {
+            lockedIn = true;
+        }
+        else if (!snapMode && isOn)
+        {
+            snapMode = true;
+            // Should change cylinder color and add a spatial UI notification to indicate snapMode on
+        }
+    }
+
     void Update()
     {
         if (isOn)
@@ -65,20 +94,29 @@ public class ApertureSelector : MonoBehaviour
                 flashlight.ModifyRadius(x);
             }
 
-            float depth = nonDominantHand.localPosition.z * 5f;
-            if (setToClosest && flashlight.currentCollisions.Count > 0) // Set inital selectionDepth to closest colliding object
+            if (snapMode)
             {
-                GameObject closest = GetClosest(transform, flashlight.currentCollisions);
-                startingDepth = flashlight.transform.InverseTransformPoint(closest.transform.position).y - depth;
-                setToClosest = false;
+                SnapSelect();
             }
-
-            if (startingDepth + depth != selectionDepth)
+            else
             {
-                selectionDepth = startingDepth + depth;
-                Vector3 pos = selectionPlane.transform.localPosition;
-                pos.y = selectionDepth;
-                selectionPlane.transform.localPosition = pos;
+                //Spatial Select
+                float depth = nonDominantHand.localPosition.z * 5f;
+                if (setToClosest && flashlight.currentCollisions.Count > 0) 
+                {
+                    // Set inital selectionDepth to closest colliding object
+                    GameObject closest = GetClosest(transform, flashlight.currentCollisions);
+                    startingDepth = flashlight.transform.InverseTransformPoint(closest.transform.position).y - depth;
+                    setToClosest = false;
+                }
+
+                if (startingDepth + depth != selectionDepth)
+                {
+                    selectionDepth = startingDepth + depth;
+                    Vector3 pos = selectionPlane.transform.localPosition;
+                    pos.y = selectionDepth;
+                    selectionPlane.transform.localPosition = pos;
+                }
             }
         }
 
@@ -103,30 +141,54 @@ public class ApertureSelector : MonoBehaviour
         return res;
     }
 
-    private SortedSet<float> FindSnapDepths(Transform start, float distBand)
+    private float[] FindSnapDepths(Transform start, float distBand)
     {
-        SortedSet<float> res = new SortedSet<float>;
+        SortedSet<float> res = new SortedSet<float>();
         foreach (GameObject g in flashlight.currentCollisions)
         {
             float dist = flashlight.transform.InverseTransformPoint(g.transform.position).y;
             int distBucket = (int)(dist / distBand);
             res.Add(distBucket);
         }
-        return res;
+        float[] snapDistances = new float[res.Count];
+        int i = 0;
+        foreach (float f in res)
+        {
+            snapDistances[i++] = f;
+        }
+        return snapDistances;
     }
 
     private void SnapSelect()
     {
-        bool lockedIn = false;
-        int maxIndex = snapDepths.Count - 1;
-        int curIndex = 0;
+        //set locked in
         if (lockedIn)
         {
-            
+            float joyStick = snapForwardAction.action.ReadValue<Vector2>().y;
+            if (joyStick == 0)
+            {
+                snapIntiated = false;
+            }
+            else if (joyStick > 0.8 && !snapIntiated)
+            {
+                curIndex = (curIndex + 1) % snapDepths.Length;
+                snapIntiated = true;
+            }
+            else if (joyStick < -0.8 && !snapIntiated)
+            {
+                curIndex = (curIndex + snapDepths.Length - 1) % snapDepths.Length;
+                snapIntiated = true;
+            }
+            Vector3 pos = selectionPlane.transform.localPosition;
+            pos.y = snapDepths[curIndex] * planeHeight;
+            selectionPlane.transform.localPosition = pos;
         }
-        snapDepths = FindSnapDepths(flashlight.transform, 
-            selectionPlane.transform.localScale.y * flashlight.transform.localScale.y);
-        
+        else
+        {
+            curIndex = 0;
+            snapDepths = FindSnapDepths(flashlight.transform,
+                planeHeight);
+        }
     }
 
     public static void ModifyOpacity(GameObject obj, float newOpacity)
