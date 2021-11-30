@@ -161,7 +161,6 @@ public class ApertureSelector : MonoBehaviour
 
     private void SnapSelect()
     {
-        //set locked in
         if (lockedIn)
         {
             float joyStick = snapForwardAction.action.ReadValue<Vector2>().y;
