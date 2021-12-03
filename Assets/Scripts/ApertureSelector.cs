@@ -101,10 +101,9 @@ public class ApertureSelector : MonoBehaviour
         Vector3 pos = selectionPlane.transform.localPosition;
         RaycastHit hitInfo;
         if (Vector3.Distance(handPos, torso.position) > Vector3.Distance(oldHandPos, torso.position))
-        //if (snapForwardAction.action.ReadValue<Vector2>().y > 0.2)
         {
             if (Physics.SphereCast(selectionPlane.transform.position, flashlight.radius, 
-                selectionDir, out hitInfo, 5, layerMask))
+                selectionDir, out hitInfo, 3, layerMask))
             {
                 pos.y = flashlight.transform.InverseTransformPoint(hitInfo.transform.position).y;
                 //Debug.Log(hitInfo.collider.gameObject);
@@ -113,7 +112,7 @@ public class ApertureSelector : MonoBehaviour
         else
         {
             if (Physics.SphereCast(selectionPlane.transform.position, flashlight.radius,
-                -selectionDir, out hitInfo, 5, layerMask))
+                -selectionDir, out hitInfo, 3, layerMask))
             {
                 pos.y = flashlight.transform.InverseTransformPoint(hitInfo.transform.position).y;
                 //Debug.Log(hitInfo.collider.gameObject);
