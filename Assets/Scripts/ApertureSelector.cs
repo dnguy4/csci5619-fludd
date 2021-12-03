@@ -13,7 +13,7 @@ public class ApertureSelector : MonoBehaviour
 
     public Transform leftHand;
     public Transform rightHand;
-    public Transform torso;
+    public Transform headset;
     bool isOn = false;
 
     //Spatial Select Params
@@ -99,23 +99,24 @@ public class ApertureSelector : MonoBehaviour
         Vector3 selectionDir = (selectionPlane.transform.position - transform.position).normalized;
 
         Vector3 pos = selectionPlane.transform.localPosition;
+        Vector3 torsoPos = headset.position - 0.5f * Vector3.down;
         RaycastHit hitInfo;
-        if (Vector3.Distance(handPos, torso.position) > Vector3.Distance(oldHandPos, torso.position))
+        if (Vector3.Distance(handPos, torsoPos) > Vector3.Distance(oldHandPos, torsoPos))
         {
             if (Physics.SphereCast(selectionPlane.transform.position, flashlight.radius, 
-                selectionDir, out hitInfo, 3, layerMask))
+                selectionDir, out hitInfo, 2-selectionDist, layerMask))
             {
                 pos.y = flashlight.transform.InverseTransformPoint(hitInfo.transform.position).y;
-                //Debug.Log(hitInfo.collider.gameObject);
+                Debug.Log(hitInfo.collider.gameObject);
             }
         }
         else
         {
             if (Physics.SphereCast(selectionPlane.transform.position, flashlight.radius,
-                -selectionDir, out hitInfo, 3, layerMask))
+                -selectionDir, out hitInfo, selectionDist, layerMask))
             {
                 pos.y = flashlight.transform.InverseTransformPoint(hitInfo.transform.position).y;
-                //Debug.Log(hitInfo.collider.gameObject);
+                Debug.Log(hitInfo.collider.gameObject);
             }
         } 
         selectionPlane.transform.localPosition = pos;
