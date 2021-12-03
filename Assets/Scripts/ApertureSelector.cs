@@ -76,8 +76,8 @@ public class ApertureSelector : MonoBehaviour
 
             Vector3 handPos = rightHand.position;
             float handDelta = (handPos - oldHandPos).sqrMagnitude;
-            //if (handDelta > 0.004)
-            if (snapForwardAction.action.ReadValue<Vector2>().y != 0)
+            if (handDelta > 0.004)
+            //if (snapForwardAction.action.ReadValue<Vector2>().y != 0)
             {
                 SnapToNext(handPos);
                 oldHandPos = handPos;
@@ -97,49 +97,30 @@ public class ApertureSelector : MonoBehaviour
     {
         float selectionDist = (selectionPlane.transform.position - transform.position).magnitude;
         Vector3 selectionDir = (selectionPlane.transform.position - transform.position).normalized;
-        RaycastHit[] hits = Physics.SphereCastAll(transform.position,
-            flashlight.radius, selectionDir, 5, layerMask); //rigidbody.sweeptest might work too
 
-        if (hits.Length > 0)
+        Vector3 pos = selectionPlane.transform.localPosition;
+        RaycastHit hitInfo;
+        if (Vector3.Distance(handPos, torso.position) > Vector3.Distance(oldHandPos, torso.position))
+        //if (snapForwardAction.action.ReadValue<Vector2>().y > 0.2)
         {
-            float behindDist = hits[0].distance, aheadDist = behindDist;
-            RaycastHit behindHit = hits[0], aheadHit = hits[0];
-            Debug.Log(selectionDist);
-            foreach (RaycastHit r in hits)
+            if (Physics.SphereCast(selectionPlane.transform.position, flashlight.radius, 
+                selectionDir, out hitInfo, 5, layerMask))
             {
-                Debug.Log(r.collider.name + ": " + r.distance);
-                if (r.distance > behindDist && r.distance < selectionDist 
-                    && !selectionPlane.currentCollisions.Contains(r.collider.gameObject))
-                {
-                    Debug.Log("Reassigning behind");
-                    behindHit = r;
-                    behindDist = r.distance;
-                }
-                else if (r.distance < aheadDist && r.distance > selectionDist
-                    && !selectionPlane.currentCollisions.Contains(r.collider.gameObject))
-                {
-                    Debug.Log("Reassigning ahead");
-                    aheadHit = r;
-                    aheadDist = r.distance;
-                }
+                pos.y = flashlight.transform.InverseTransformPoint(hitInfo.transform.position).y;
+                //Debug.Log(hitInfo.collider.gameObject);
             }
-
-            Vector3 pos = selectionPlane.transform.localPosition;
-            //if (Vector3.Distance(handPos, torso.position) > Vector3.Distance(oldHandPos, torso.position))
-            if (snapForwardAction.action.ReadValue<Vector2>().y > 0.2)
-            {
-                
-                pos.y = flashlight.transform.InverseTransformPoint(aheadHit.transform.position).y;
-            }
-            else
-            {
-                pos.y = flashlight.transform.InverseTransformPoint(behindHit.transform.position).y;
-            }
-
-            //Debug.Log(aheadHit.collider.gameObject.name);
-            //Debug.Log(behindHit.collider.gameObject.name);
-            selectionPlane.transform.localPosition = pos;
         }
+        else
+        {
+            if (Physics.SphereCast(selectionPlane.transform.position, flashlight.radius,
+                -selectionDir, out hitInfo, 5, layerMask))
+            {
+                pos.y = flashlight.transform.InverseTransformPoint(hitInfo.transform.position).y;
+                //Debug.Log(hitInfo.collider.gameObject);
+            }
+        } 
+        selectionPlane.transform.localPosition = pos;
+        
     }
 
     public static void ModifyOpacity(GameObject obj, float newOpacity)
