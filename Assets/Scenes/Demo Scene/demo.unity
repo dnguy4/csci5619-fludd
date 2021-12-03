@@ -394,60 +394,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 1e366e71a67d14542972d81f06f6598f, type: 3}
   m_PrefabInstance: {fileID: 39095885}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &39095887 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 1e366e71a67d14542972d81f06f6598f, type: 3}
-  m_PrefabInstance: {fileID: 39095885}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &39095888
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 39095887}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a223b773cf9feda439f9f4f670474417, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  flashlight: {fileID: 37227208}
-  selectionPlane: {fileID: 1548460562}
-  toggleFlashAction:
-    m_UseReference: 1
-    m_Action:
-      m_Name: Toggle Flash
-      m_Type: 0
-      m_ExpectedControlType: 
-      m_Id: fe880d18-cfdd-4ae7-8374-4a9acc9d12e2
-      m_Processors: 
-      m_Interactions: 
-      m_SingletonActionBindings: []
-    m_Reference: {fileID: 7493039631256701442, guid: c348712bda248c246b8c49b3db54643f, type: 3}
-  snapForwardAction:
-    m_UseReference: 1
-    m_Action:
-      m_Name: Snap Forward
-      m_Type: 0
-      m_ExpectedControlType: 
-      m_Id: b27f5ff4-88d7-4c38-b53a-fceb8604d09d
-      m_Processors: 
-      m_Interactions: 
-      m_SingletonActionBindings: []
-    m_Reference: {fileID: 6972639530819350904, guid: c348712bda248c246b8c49b3db54643f, type: 3}
-  toggleSnapAction:
-    m_UseReference: 1
-    m_Action:
-      m_Name: Toggle Snap
-      m_Type: 0
-      m_ExpectedControlType: 
-      m_Id: bfc55fd0-0e95-489a-bb3f-e6b72459cbec
-      m_Processors: 
-      m_Interactions: 
-      m_SingletonActionBindings: []
-    m_Reference: {fileID: -7085712801148320774, guid: c348712bda248c246b8c49b3db54643f, type: 3}
-  nonDominantHand: {fileID: 1210298540}
-  dominantHand: {fileID: 1371183697}
 --- !u!1 &43262456
 GameObject:
   m_ObjectHideFlags: 0
@@ -1438,6 +1384,60 @@ RectTransform:
   m_AnchoredPosition: {x: 0.4, y: -2.9}
   m_SizeDelta: {x: 10, y: 10}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &1027610803 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 6a9c7d2ed6645664fba68f0108eab51d, type: 3}
+  m_PrefabInstance: {fileID: 1261931831}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1027610804
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1027610803}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a223b773cf9feda439f9f4f670474417, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  flashlight: {fileID: 37227208}
+  selectionPlane: {fileID: 1548460562}
+  toggleFlashAction:
+    m_UseReference: 1
+    m_Action:
+      m_Name: Toggle Flash
+      m_Type: 0
+      m_ExpectedControlType: 
+      m_Id: fe880d18-cfdd-4ae7-8374-4a9acc9d12e2
+      m_Processors: 
+      m_Interactions: 
+      m_SingletonActionBindings: []
+    m_Reference: {fileID: 7493039631256701442, guid: c348712bda248c246b8c49b3db54643f, type: 3}
+  snapForwardAction:
+    m_UseReference: 1
+    m_Action:
+      m_Name: Snap Forward
+      m_Type: 0
+      m_ExpectedControlType: 
+      m_Id: b27f5ff4-88d7-4c38-b53a-fceb8604d09d
+      m_Processors: 
+      m_Interactions: 
+      m_SingletonActionBindings: []
+    m_Reference: {fileID: 6972639530819350904, guid: c348712bda248c246b8c49b3db54643f, type: 3}
+  toggleSnapAction:
+    m_UseReference: 1
+    m_Action:
+      m_Name: Toggle Snap
+      m_Type: 0
+      m_ExpectedControlType: 
+      m_Id: bfc55fd0-0e95-489a-bb3f-e6b72459cbec
+      m_Processors: 
+      m_Interactions: 
+      m_SingletonActionBindings: []
+    m_Reference: {fileID: -7085712801148320774, guid: c348712bda248c246b8c49b3db54643f, type: 3}
+  leftHand: {fileID: 1371183697}
+  rightHand: {fileID: 1210298540}
 --- !u!1 &1182249291
 GameObject:
   m_ObjectHideFlags: 0

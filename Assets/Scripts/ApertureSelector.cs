@@ -11,23 +11,17 @@ public class ApertureSelector : MonoBehaviour
     public InputActionProperty snapForwardAction;
     public InputActionProperty toggleSnapAction;
 
-    public Transform nonDominantHand;
-    public Transform dominantHand;
+    public Transform leftHand;
+    public Transform rightHand;
+    public Transform torso;
     bool isOn = false;
 
     //Spatial Select Params
     bool setToClosest = false;
-    float selectionDepth = 1;
-    float startingDepth = 0;
+    Vector3 oldHandPos;
     float alphaHide = 0.5f;
+    public LayerMask layerMask;
 
-    //Snap Select Params
-    float[] snapDepths;
-    float planeHeight;
-    bool lockedIn = false;
-    bool snapMode = false;
-    bool snapIntiated = false;
-    int curIndex = 0;
 
     // Start is called before the first frame update
     void Start()
@@ -41,9 +35,9 @@ public class ApertureSelector : MonoBehaviour
         flashlight.onTriggerExited += OnFlashlightExit;
         selectionPlane.onTriggerExited += HideOutline;
 
-        planeHeight = selectionPlane.transform.localScale.y * flashlight.transform.localScale.y;
+        //planeHeight = selectionPlane.transform.localScale.y * flashlight.transform.localScale.y;
 
-        toggleSnapAction.action.performed += ToggleSnap;
+        oldHandPos = rightHand.position;
     }
 
     public void ToggleFlash(InputAction.CallbackContext context)
@@ -55,7 +49,6 @@ public class ApertureSelector : MonoBehaviour
         } 
         else //Just turned off flashlight, doing selection
         {
-            snapMode = lockedIn = false;
             foreach (GameObject s in selectionPlane.currentCollisions)
             {
                 Debug.Log(s.name);
@@ -66,127 +59,86 @@ public class ApertureSelector : MonoBehaviour
        
     }
 
-    public void ToggleSnap(InputAction.CallbackContext context)
-    {
-        if (snapMode && lockedIn)
-        {
-            ToggleFlash(context);
-        }
-        else if (snapMode && !lockedIn)
-        {
-            lockedIn = true;
-        }
-        else if (!snapMode && isOn)
-        {
-            snapMode = true;
-            // Should change cylinder color and add a spatial UI notification to indicate snapMode on
-        }
-    }
-
     void Update()
     {
         if (isOn)
         {
             // Aperture Select - Changing Width
-            float x = Mathf.Abs(nonDominantHand.localPosition.x - dominantHand.localPosition.x);
+            float x = Mathf.Abs(transform.InverseTransformPoint(leftHand.position).x);
+            //float x = Mathf.Abs(leftHand.localPosition.x - rightHand.localPosition.x);
             if (x != flashlight.radius)
             {
                 flashlight.ModifyRadius(x);
             }
 
-            if (snapMode)
+            //Spatial Select
+            //Vector3 nonDominantPos = transform.InverseTransformPoint(leftHand.transform.position);
+
+            Vector3 handPos = rightHand.position;
+            float handDelta = (handPos - oldHandPos).sqrMagnitude;
+            //if (handDelta > 0.004)
+            if (snapForwardAction.action.ReadValue<Vector2>().y != 0)
             {
-                SnapSelect();
+                SnapToNext(handPos);
+                oldHandPos = handPos;
+            }
+            // Set inital selectionDepth to closest colliding object
+            // GameObject closest = GetClosest(transform, flashlight.currentCollisions);
+
+            //Vector3 pos = selectionPlane.transform.localPosition;
+            //pos.y = flashlight.transform.InverseTransformPoint(closest.transform.position).y;
+            //selectionPlane.transform.localPosition = pos;
+                
+            
+        }
+
+    }
+    private void SnapToNext(Vector3 handPos)
+    {
+        float selectionDist = (selectionPlane.transform.position - transform.position).magnitude;
+        Vector3 selectionDir = (selectionPlane.transform.position - transform.position).normalized;
+        RaycastHit[] hits = Physics.SphereCastAll(transform.position,
+            flashlight.radius, selectionDir, 5, layerMask); //rigidbody.sweeptest might work too
+
+        if (hits.Length > 0)
+        {
+            float behindDist = hits[0].distance, aheadDist = behindDist;
+            RaycastHit behindHit = hits[0], aheadHit = hits[0];
+            Debug.Log(selectionDist);
+            foreach (RaycastHit r in hits)
+            {
+                Debug.Log(r.collider.name + ": " + r.distance);
+                if (r.distance > behindDist && r.distance < selectionDist 
+                    && !selectionPlane.currentCollisions.Contains(r.collider.gameObject))
+                {
+                    Debug.Log("Reassigning behind");
+                    behindHit = r;
+                    behindDist = r.distance;
+                }
+                else if (r.distance < aheadDist && r.distance > selectionDist
+                    && !selectionPlane.currentCollisions.Contains(r.collider.gameObject))
+                {
+                    Debug.Log("Reassigning ahead");
+                    aheadHit = r;
+                    aheadDist = r.distance;
+                }
+            }
+
+            Vector3 pos = selectionPlane.transform.localPosition;
+            //if (Vector3.Distance(handPos, torso.position) > Vector3.Distance(oldHandPos, torso.position))
+            if (snapForwardAction.action.ReadValue<Vector2>().y > 0.2)
+            {
+                
+                pos.y = flashlight.transform.InverseTransformPoint(aheadHit.transform.position).y;
             }
             else
             {
-                //Spatial Select
-                float depth = nonDominantHand.localPosition.z * 5f;
-                if (setToClosest && flashlight.currentCollisions.Count > 0) 
-                {
-                    // Set inital selectionDepth to closest colliding object
-                    GameObject closest = GetClosest(transform, flashlight.currentCollisions);
-                    startingDepth = flashlight.transform.InverseTransformPoint(closest.transform.position).y - depth;
-                    setToClosest = false;
-                }
-
-                if (startingDepth + depth != selectionDepth)
-                {
-                    selectionDepth = startingDepth + depth;
-                    Vector3 pos = selectionPlane.transform.localPosition;
-                    pos.y = selectionDepth;
-                    selectionPlane.transform.localPosition = pos;
-                }
+                pos.y = flashlight.transform.InverseTransformPoint(behindHit.transform.position).y;
             }
-        }
 
-    }
-
-    private SortedDictionary<int, List<GameObject>> FindSnapBuckets(Transform start, float distBand)
-    {
-        SortedDictionary<int, List<GameObject>> res = new SortedDictionary<int, List<GameObject>>();
-        foreach (GameObject g in flashlight.currentCollisions)
-        {
-            float dist = flashlight.transform.InverseTransformPoint(g.transform.position).y;
-            int distBucket = (int)(dist / distBand);
-            if (res.ContainsKey(distBucket))
-            {
-                res[distBucket].Add(g);
-            } else
-            {
-                res.Add(distBucket, new List<GameObject>());
-                res[distBucket].Add(g);
-            }
-        }
-        return res;
-    }
-
-    private float[] FindSnapDepths(Transform start, float distBand)
-    {
-        SortedSet<float> res = new SortedSet<float>();
-        foreach (GameObject g in flashlight.currentCollisions)
-        {
-            float dist = flashlight.transform.InverseTransformPoint(g.transform.position).y;
-            int distBucket = (int)(dist / distBand);
-            res.Add(distBucket);
-        }
-        float[] snapDistances = new float[res.Count];
-        int i = 0;
-        foreach (float f in res)
-        {
-            snapDistances[i++] = f;
-        }
-        return snapDistances;
-    }
-
-    private void SnapSelect()
-    {
-        if (lockedIn)
-        {
-            float joyStick = snapForwardAction.action.ReadValue<Vector2>().y;
-            if (joyStick == 0)
-            {
-                snapIntiated = false;
-            }
-            else if (joyStick > 0.8 && !snapIntiated)
-            {
-                curIndex = (curIndex + 1) % snapDepths.Length;
-                snapIntiated = true;
-            }
-            else if (joyStick < -0.8 && !snapIntiated)
-            {
-                curIndex = (curIndex + snapDepths.Length - 1) % snapDepths.Length;
-                snapIntiated = true;
-            }
-            Vector3 pos = selectionPlane.transform.localPosition;
-            pos.y = snapDepths[curIndex] * planeHeight;
+            //Debug.Log(aheadHit.collider.gameObject.name);
+            //Debug.Log(behindHit.collider.gameObject.name);
             selectionPlane.transform.localPosition = pos;
-        }
-        else
-        {
-            curIndex = 0;
-            snapDepths = FindSnapDepths(flashlight.transform,
-                planeHeight);
         }
     }
 
@@ -238,6 +190,5 @@ public class ApertureSelector : MonoBehaviour
         {
             ModifyOpacity(other, alphaHide);
         }
-        //ModifyOpacity(other, alphaHide);
     }
 }

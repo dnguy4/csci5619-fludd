@@ -11,8 +11,8 @@ public class Cylinder : MonoBehaviour
 	public float radius;
 
 	Collider myCollider; 
-	// Start is called before the first frame update
-	void Start()
+
+	void Awake()
 	{
 		myCollider = GetComponent<Collider>();
 		currentCollisions = new HashSet<GameObject>();
