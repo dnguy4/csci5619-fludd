@@ -9,7 +9,6 @@ public class ApertureSelector : MonoBehaviour
     public Cylinder selectionPlane;
     public InputActionProperty toggleFlashAction;
     public InputActionProperty snapForwardAction;
-    public InputActionProperty toggleSnapAction;
 
     public Transform leftHand;
     public Transform rightHand;
@@ -72,8 +71,6 @@ public class ApertureSelector : MonoBehaviour
             }
 
             //Spatial Select
-            //Vector3 nonDominantPos = transform.InverseTransformPoint(leftHand.transform.position);
-
             Vector3 handPos = rightHand.position;
             float handDelta = (handPos - oldHandPos).sqrMagnitude;
             if (handDelta > 0.004)
@@ -81,14 +78,7 @@ public class ApertureSelector : MonoBehaviour
             {
                 SnapToNext(handPos);
                 oldHandPos = handPos;
-            }
-            // Set inital selectionDepth to closest colliding object
-            // GameObject closest = GetClosest(transform, flashlight.currentCollisions);
-
-            //Vector3 pos = selectionPlane.transform.localPosition;
-            //pos.y = flashlight.transform.InverseTransformPoint(closest.transform.position).y;
-            //selectionPlane.transform.localPosition = pos;
-                
+            }   
             
         }
 
@@ -129,22 +119,6 @@ public class ApertureSelector : MonoBehaviour
         Color oldColor = r.material.color;
         Color newColor = new Color(oldColor.r, oldColor.g, oldColor.b, newOpacity);
         r.material.SetColor("_Color", newColor);
-    }
-
-    public static GameObject GetClosest(Transform start, IEnumerable<GameObject> lst)
-    {
-        float closestDist = Mathf.Infinity;
-        GameObject bestTarget = null;
-        foreach (GameObject s in lst)
-        {
-            float dist = (s.transform.position - start.position).sqrMagnitude;
-            if (dist < closestDist)
-            {
-                closestDist = dist;
-                bestTarget = s;
-            }
-        }
-        return bestTarget;
     }
 
     private void OnFlashlightEnter(GameObject trigger, GameObject other)
