@@ -6,6 +6,7 @@ public class SpatialMenu : MonoBehaviour
 {
     public LineRenderer leftHand;
     public Transform[] points;
+    public GameObject handMenu;
 
     void Start()
     {
@@ -18,5 +19,9 @@ public class SpatialMenu : MonoBehaviour
         {
             leftHand.SetPosition(i, points[i].position);
         }
+    }
+    public void ButtonClicked()
+    {
+        handMenu.SetActive(false);
     }
 }
