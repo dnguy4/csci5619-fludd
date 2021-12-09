@@ -84,28 +84,28 @@ public class QuadMenu : MonoBehaviour
 
     public void OnButtonClick(int i)
     {
-        for (int j = 0; j < 4; j++)
-        {
-            if (j != i)
-            {
-                foreach (Selectable s in quads[j])
-                {
-                    s.obj.transform.parent = s.initialParent;
-                    s.obj.transform.rotation = s.initialRot;
-                    s.obj.transform.localScale = s.initialSca;
-                    s.obj.transform.position = s.initialPos;
-                }
-                quads[j].Clear();
-            }
-        }
+        //for (int j = 0; j < 4; j++)
+        //{
+        //    if (j != i)
+        //    {
+        //        foreach (Selectable s in quads[j])
+        //        {
+        //            s.obj.transform.parent = s.initialParent;
+        //            s.obj.transform.rotation = s.initialRot;
+        //            s.obj.transform.localScale = s.initialSca;
+        //            s.obj.transform.position = s.initialPos;
+        //        }
+        //        quads[j].Clear();
+        //    }
+        //}
 
-        if (quads[i].Count == 1)
-        {
-            //Finish selection
-        }
-        else
-        {
-            RedistributeQuads(quads[i]);
-        }
+        //if (quads[i].Count == 1)
+        //{
+        //    //Finish selection
+        //}
+        //else
+        //{
+        //    RedistributeQuads(quads[i]);
+        //}
     }
 }
