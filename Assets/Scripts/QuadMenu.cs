@@ -9,13 +9,17 @@ public class QuadMenu : MonoBehaviour
     {
         public GameObject obj;
         public Vector3 initialPos;
+        public Quaternion initialRot;
+        public Vector3 initialSca;
         public Transform initialParent;
 
-        public Selectable(GameObject o, Vector3 p, Transform par)
+        public Selectable(GameObject o, Vector3 p, Quaternion r, Vector3 s, Transform par)
         {
             this.obj = o;
             this.initialPos = p;
             this.initialParent = par;
+            this.initialRot = r;
+            this.initialSca = s;
         }
     }
 
@@ -42,7 +46,8 @@ public class QuadMenu : MonoBehaviour
         for (int i=0; i< objs.Count; i++)
         {
             int index = i % 4;
-            Selectable s = new Selectable(objs[i], objs[i].transform.position, objs[i].transform.parent);
+            Selectable s = new Selectable(objs[i], objs[i].transform.position, 
+                objs[i].transform.rotation, objs[i].transform.localScale, objs[i].transform.parent);
             quads[index].Add(s);
 
             objs[i].transform.parent = buttons[index];
@@ -50,6 +55,10 @@ public class QuadMenu : MonoBehaviour
             int horizontalOffset = (i / 4) % 4;
             int verticalOffset = (i / 4) / 4;
             objs[i].transform.localPosition = new Vector3(-30 + 15*horizontalOffset, 7 - verticalOffset*14, 0);
+
+            // objs[i].AddComponent<RectTransform>();
+            objs[i].transform.localRotation = Quaternion.Euler(new Vector3(0, 0, 0));
+            objs[i].transform.localScale = new Vector3(100,100,1);
         }
     }
 
@@ -81,8 +90,10 @@ public class QuadMenu : MonoBehaviour
             {
                 foreach (Selectable s in quads[j])
                 {
-                    s.obj.transform.position = s.initialPos;
                     s.obj.transform.parent = s.initialParent;
+                    s.obj.transform.rotation = s.initialRot;
+                    s.obj.transform.localScale = s.initialSca;
+                    s.obj.transform.position = s.initialPos;
                 }
                 quads[j].Clear();
             }
