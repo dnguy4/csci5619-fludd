@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
+
 
 public class ApertureSelector : MonoBehaviour
 {
@@ -13,10 +15,10 @@ public class ApertureSelector : MonoBehaviour
     public Transform leftHand;
     public Transform rightHand;
     public Transform headset;
+    public QuadMenu menu;
     bool isOn = false;
 
     //Spatial Select Params
-    bool setToClosest = false;
     Vector3 oldHandPos;
     float alphaHide = 0.5f;
     public LayerMask layerMask;
@@ -42,18 +44,19 @@ public class ApertureSelector : MonoBehaviour
     public void ToggleFlash(InputAction.CallbackContext context)
     {
         isOn = !isOn;
-        if (isOn) //Just turned on flashlight, configure
+
+        menu.gameObject.SetActive(!isOn);
+        if (!isOn) //Just turned off flashlight, doing selection. Replace with Grab button probably
         {
-            setToClosest = true;
-        } 
-        else //Just turned off flashlight, doing selection
-        {
-            foreach (GameObject s in selectionPlane.currentCollisions)
+            if (selectionPlane.currentCollisions.Count > 1)
             {
-                Debug.Log(s.name);
+                menu.PopulateQuads(selectionPlane.currentCollisions.ToList());
+            }
+            else
+            {
+                //Do selection Logic
             }
         }
-
         flashlight.gameObject.SetActive(isOn);
        
     }
@@ -97,7 +100,7 @@ public class ApertureSelector : MonoBehaviour
                 selectionDir, out hitInfo, 2-selectionDist, layerMask))
             {
                 pos.y = flashlight.transform.InverseTransformPoint(hitInfo.transform.position).y;
-                Debug.Log(hitInfo.collider.gameObject);
+                //Debug.Log(hitInfo.collider.gameObject);
             }
         }
         else
@@ -106,7 +109,7 @@ public class ApertureSelector : MonoBehaviour
                 -selectionDir, out hitInfo, selectionDist, layerMask))
             {
                 pos.y = flashlight.transform.InverseTransformPoint(hitInfo.transform.position).y;
-                Debug.Log(hitInfo.collider.gameObject);
+                //Debug.Log(hitInfo.collider.gameObject);
             }
         } 
         selectionPlane.transform.localPosition = pos;
