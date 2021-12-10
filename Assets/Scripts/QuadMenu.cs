@@ -25,6 +25,7 @@ public class QuadMenu : MonoBehaviour
 
     public Transform[] buttons;
     List<Selectable>[] quads;
+    Vector3 refSize = new Vector3(0.12f, 0.12f, 0.12f);
 
     void Start()
     {
@@ -50,7 +51,7 @@ public class QuadMenu : MonoBehaviour
                 objs[i].transform.rotation, objs[i].transform.localScale, objs[i].transform.parent);
             quads[index].Add(s);
 
-
+            ResizeGameobject(objs[i], refSize);
             Vector3 newScale = 100 * objs[i].transform.localScale;
             newScale.z = objs[i].transform.localScale.z;
             objs[i].transform.parent = buttons[index];
@@ -66,6 +67,20 @@ public class QuadMenu : MonoBehaviour
         }
     }
 
+    public void ResizeGameobject(GameObject go, Vector3 refSize)
+    {
+        //refSize should be defined in the coordinate space go is in
+        Vector3 oldSize = go.GetComponent<Renderer>().bounds.size;
+        float resizeX = refSize.x / oldSize.x;
+        float resizeY = refSize.y / oldSize.y;
+        float resizeZ = refSize.z / oldSize.z;
+
+        resizeX *= go.transform.localScale.x;
+        resizeY *= go.transform.localScale.y;
+        resizeZ *= go.transform.localScale.z;
+
+        go.transform.localScale = new Vector3(resizeX, resizeY, resizeZ);
+    }
 
     void RedistributeQuads(List<Selectable> list)
     {
