@@ -9,3 +9,5 @@
 
 ## (DEBUG ISSUE)
 The button stays hidden after selecting a quadrant and we weren't exactly sure why. We tried debugging during office hours and it seems to be something to do with the button rather than our code (because we commented out the button function and the issue was still occuring).
+
+*Update* Managed to fix the debug issue. Just had to set navigation to None inside the Button component.

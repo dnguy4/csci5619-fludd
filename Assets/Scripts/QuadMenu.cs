@@ -50,15 +50,19 @@ public class QuadMenu : MonoBehaviour
                 objs[i].transform.rotation, objs[i].transform.localScale, objs[i].transform.parent);
             quads[index].Add(s);
 
+
+            Vector3 newScale = 100 * objs[i].transform.localScale;
+            newScale.z = objs[i].transform.localScale.z;
             objs[i].transform.parent = buttons[index];
+
             //calculate offsets
             int horizontalOffset = (i / 4) % 4;
             int verticalOffset = (i / 4) / 4;
             objs[i].transform.localPosition = new Vector3(-30 + 15*horizontalOffset, 7 - verticalOffset*14, 0);
 
-            // objs[i].AddComponent<RectTransform>();
+            // Set scale and rotation for proper display
             objs[i].transform.localRotation = Quaternion.Euler(new Vector3(0, 0, 0));
-            objs[i].transform.localScale = new Vector3(100,100,1);
+            objs[i].transform.localScale = newScale;
         }
     }
 
@@ -84,28 +88,28 @@ public class QuadMenu : MonoBehaviour
 
     public void OnButtonClick(int i)
     {
-        //for (int j = 0; j < 4; j++)
-        //{
-        //    if (j != i)
-        //    {
-        //        foreach (Selectable s in quads[j])
-        //        {
-        //            s.obj.transform.parent = s.initialParent;
-        //            s.obj.transform.rotation = s.initialRot;
-        //            s.obj.transform.localScale = s.initialSca;
-        //            s.obj.transform.position = s.initialPos;
-        //        }
-        //        quads[j].Clear();
-        //    }
-        //}
+        for (int j = 0; j < 4; j++)
+        {
+            if (j != i)
+            {
+                foreach (Selectable s in quads[j])
+                {
+                    s.obj.transform.parent = s.initialParent;
+                    s.obj.transform.rotation = s.initialRot;
+                    s.obj.transform.localScale = s.initialSca;
+                    s.obj.transform.position = s.initialPos;
+                }
+                quads[j].Clear();
+            }
+        }
 
-        //if (quads[i].Count == 1)
-        //{
-        //    //Finish selection
-        //}
-        //else
-        //{
-        //    RedistributeQuads(quads[i]);
-        //}
+        if (quads[i].Count == 1)
+        {
+            //Finish selection
+        }
+        else
+        {
+            RedistributeQuads(quads[i]);
+        }
     }
 }

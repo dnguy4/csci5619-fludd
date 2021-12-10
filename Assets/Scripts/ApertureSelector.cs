@@ -97,7 +97,7 @@ public class ApertureSelector : MonoBehaviour
         if (Vector3.Distance(handPos, torsoPos) > Vector3.Distance(oldHandPos, torsoPos))
         {
             if (Physics.SphereCast(selectionPlane.transform.position, flashlight.radius, 
-                selectionDir, out hitInfo, 2-selectionDist, layerMask))
+                selectionDir, out hitInfo, 4-selectionDist, layerMask))
             {
                 pos.y = flashlight.transform.InverseTransformPoint(hitInfo.transform.position).y;
                 //Debug.Log(hitInfo.collider.gameObject);
