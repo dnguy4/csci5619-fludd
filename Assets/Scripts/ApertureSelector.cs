@@ -21,6 +21,7 @@ public class ApertureSelector : MonoBehaviour
     //Spatial Select Params
     Vector3 oldHandPos;
     float alphaHide = 0.5f;
+    float flashlightSize;
     public LayerMask layerMask;
 
 
@@ -38,6 +39,8 @@ public class ApertureSelector : MonoBehaviour
 
         oldHandPos = rightHand.position;
         rHandGrabber = GetComponent<GraspGrabberRight>();
+
+        flashlightSize = flashlight.transform.localScale.y * 2;
     }
 
     public void ToggleFlash(InputAction.CallbackContext context)
@@ -46,6 +49,7 @@ public class ApertureSelector : MonoBehaviour
 
         menu.gameObject.SetActive(!isOn);
         menu.ClearQuads();
+
         if (!isOn) //Just turned off flashlight, doing selection. Replace with Grab button probably
         {
             if (selectionPlane.currentCollisions.Count > 1)
@@ -96,7 +100,7 @@ public class ApertureSelector : MonoBehaviour
         if (Vector3.Distance(handPos, torsoPos) > Vector3.Distance(oldHandPos, torsoPos))
         {
             if (Physics.SphereCast(selectionPlane.transform.position, flashlight.radius, 
-                selectionDir, out hitInfo, 4-selectionDist, layerMask))
+                selectionDir, out hitInfo, flashlightSize - selectionDist, layerMask))
             {
                 pos.y = flashlight.transform.InverseTransformPoint(hitInfo.transform.position).y;
                 //Debug.Log(hitInfo.collider.gameObject);

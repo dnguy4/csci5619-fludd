@@ -112,6 +112,7 @@ public class QuadMenu : MonoBehaviour
         }
     }
 
+    //Add onHover event to do the selection instead of clicking?
     public void OnButtonClick(int i)
     {
         for (int j = 0; j < 4; j++)

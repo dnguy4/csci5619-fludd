@@ -676,7 +676,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &50846112
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1050,8 +1050,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -76.3, y: -6.3}
-  m_SizeDelta: {x: 120, y: 20}
+  m_AnchoredPosition: {x: -55.7, y: -1.1}
+  m_SizeDelta: {x: 120, y: 40}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &205303258
 MonoBehaviour:
@@ -1086,7 +1086,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Toggle Snapping
+  m_Text: "Start/Finish \nFlashlight"
 --- !u!222 &205303259
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1346,7 +1346,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &364090272
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1361,9 +1361,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   leftHand: {fileID: 364090273}
   points:
-  - {fileID: 43262457}
-  - {fileID: 211613085}
-  handMenu: {fileID: 0}
+  - {fileID: 1681569940}
+  - {fileID: 867721143}
+  LinePrefab: {fileID: 582546599138947751, guid: 82e9b1010af705e4cb6b5fe9ef8e5ef6, type: 3}
 --- !u!120 &364090273
 LineRenderer:
   m_ObjectHideFlags: 0
@@ -1371,7 +1371,7 @@ LineRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 364090271}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 0
   m_ReceiveShadows: 0
   m_DynamicOccludee: 1
