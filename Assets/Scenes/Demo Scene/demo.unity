@@ -1764,7 +1764,7 @@ MonoBehaviour:
   - {fileID: 475889583}
   - {fileID: 510766937}
   - {fileID: 88685936}
-  rhand: {fileID: 1027610803}
+  rhand: {fileID: 1027610805}
 --- !u!1 &475889582
 GameObject:
   m_ObjectHideFlags: 0
@@ -4173,7 +4173,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6598815579406187037, guid: 9f5a24a380916d14db9775daab4fe333, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6598815579406187037, guid: 9f5a24a380916d14db9775daab4fe333, type: 3}
       propertyPath: m_TagString

@@ -16,6 +16,7 @@ public class ApertureSelector : MonoBehaviour
     public Transform rightHand;
     public Transform headset;
     public QuadMenu menu;
+    GraspGrabberRight rHandGrabber;
     bool isOn = false;
 
     //Spatial Select Params
@@ -39,6 +40,7 @@ public class ApertureSelector : MonoBehaviour
         //planeHeight = selectionPlane.transform.localScale.y * flashlight.transform.localScale.y;
 
         oldHandPos = rightHand.position;
+        rHandGrabber = GetComponent<GraspGrabberRight>();
     }
 
     public void ToggleFlash(InputAction.CallbackContext context)
@@ -52,9 +54,10 @@ public class ApertureSelector : MonoBehaviour
             {
                 menu.PopulateQuads(selectionPlane.currentCollisions.ToList());
             }
-            else
+            else if (selectionPlane.currentCollisions.Count == 1)
             {
-                //Do selection Logic
+                //Probably add check if object is grabbable
+                rHandGrabber.GrabObject(selectionPlane.currentCollisions.ToList()[0]);
             }
         }
         flashlight.gameObject.SetActive(isOn);
@@ -77,7 +80,6 @@ public class ApertureSelector : MonoBehaviour
             Vector3 handPos = rightHand.position;
             float handDelta = (handPos - oldHandPos).sqrMagnitude;
             if (handDelta > 0.004)
-            //if (snapForwardAction.action.ReadValue<Vector2>().y != 0)
             {
                 SnapToNext(handPos);
                 oldHandPos = handPos;

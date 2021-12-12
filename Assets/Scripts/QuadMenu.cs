@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class QuadMenu : MonoBehaviour
 {
-    struct Selectable
+    public struct Selectable
     {
         public GameObject obj;
         public Vector3 initialPos;
@@ -24,7 +24,7 @@ public class QuadMenu : MonoBehaviour
     }
 
     public Transform[] buttons;
-    public GameObject rhand;
+    public GraspGrabberRight rhand;
     List<Selectable>[] quads;
     Vector3 refSize = new Vector3(0.12f, 0.12f, 0.12f);
 
@@ -122,12 +122,10 @@ public class QuadMenu : MonoBehaviour
         if (quads[i].Count == 1)
         {
             //Finish selection
-            foreach (Selectable s in quads[i]) { 
-                s.obj.transform.parent = rhand.transform;
-                s.obj.transform.rotation = s.initialRot;
-                s.obj.transform.localScale = s.initialSca;
-                s.obj.transform.position = rhand.transform.position;
-            }
+            Selectable s = quads[i][0];
+            rhand.GrabSelectableFromMenu(s);
+            quads[i].Clear();
+            gameObject.SetActive(false);
         }
         else
         {

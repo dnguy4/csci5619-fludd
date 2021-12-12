@@ -42,9 +42,32 @@ public class GraspGrabberRight : Grabber
         //}
     }
 
+    public void GrabSelectableFromMenu(QuadMenu.Selectable selectable)
+    {
+        GameObject other = selectable.obj;
+        if (other.GetComponent<Grabbable>())
+        {
+            currentObject = other.GetComponent<Grabbable>();
+
+            // Reset scale and rotation
+            other.transform.parent = selectable.initialParent;
+            other.transform.rotation = selectable.initialRot;
+            other.transform.localScale = selectable.initialSca;
+
+            // Move to the hand and "grab"
+            GrabObject(other);
+        }
+    }
+
+    public void GrabObject(GameObject other)
+    {
+        other.transform.position = transform.position;
+        Release(new InputAction.CallbackContext());
+        Grab(new InputAction.CallbackContext());
+    }
+
     public override void Grab(InputAction.CallbackContext context)
     {
-        Debug.Log("SOMETHING");
         if (currentObject && grabbedObject == null)
         {
             if (currentObject.GetCurrentGrabber() != null)
