@@ -156,7 +156,7 @@
                     "interactions": ""
                 },
                 {
-                    "name": "A Button",
+                    "name": "X Button",
                     "type": "Button",
                     "id": "d9c69f07-4186-4b1b-a077-5a376aa83152",
                     "expectedControlType": "Button",
@@ -491,7 +491,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Generic XR Controller",
-                    "action": "A Button",
+                    "action": "X Button",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
@@ -609,6 +609,14 @@
                     "name": "Rtrig",
                     "type": "Button",
                     "id": "4d3940f6-1ec8-4baa-aa3a-ad717051d1f4",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "A Button",
+                    "type": "Button",
+                    "id": "7c76e0f3-ad4d-4bda-a1b5-415d4094bc24",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": ""
@@ -931,6 +939,17 @@
                     "processors": "",
                     "groups": "Generic XR Controller",
                     "action": "Rtrig",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "de2a9953-b0ba-4d01-adc6-2c1846da633c",
+                    "path": "<XRController>{RightHand}/primaryButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Generic XR Controller",
+                    "action": "A Button",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

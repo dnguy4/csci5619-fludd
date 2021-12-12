@@ -10,7 +10,6 @@ public class ApertureSelector : MonoBehaviour
     public Cylinder flashlight;
     public Cylinder selectionPlane;
     public InputActionProperty toggleFlashAction;
-    public InputActionProperty snapForwardAction;
 
     public Transform leftHand;
     public Transform rightHand;
@@ -37,8 +36,6 @@ public class ApertureSelector : MonoBehaviour
         flashlight.onTriggerExited += OnFlashlightExit;
         selectionPlane.onTriggerExited += HideOutline;
 
-        //planeHeight = selectionPlane.transform.localScale.y * flashlight.transform.localScale.y;
-
         oldHandPos = rightHand.position;
         rHandGrabber = GetComponent<GraspGrabberRight>();
     }
@@ -48,6 +45,7 @@ public class ApertureSelector : MonoBehaviour
         isOn = !isOn;
 
         menu.gameObject.SetActive(!isOn);
+        menu.ClearQuads();
         if (!isOn) //Just turned off flashlight, doing selection. Replace with Grab button probably
         {
             if (selectionPlane.currentCollisions.Count > 1)
@@ -68,9 +66,8 @@ public class ApertureSelector : MonoBehaviour
     {
         if (isOn)
         {
-            // Aperture Select - Changing Width
+            // Aperture Select - Changing Width based on horizontal distance between hands
             float x = Mathf.Abs(transform.InverseTransformPoint(leftHand.position).x);
-            //float x = Mathf.Abs(leftHand.localPosition.x - rightHand.localPosition.x);
             if (x != flashlight.radius)
             {
                 flashlight.ModifyRadius(x);
@@ -94,7 +91,7 @@ public class ApertureSelector : MonoBehaviour
         Vector3 selectionDir = (selectionPlane.transform.position - transform.position).normalized;
 
         Vector3 pos = selectionPlane.transform.localPosition;
-        Vector3 torsoPos = headset.position - 0.5f * Vector3.down;
+        Vector3 torsoPos = headset.position + 0.5f * Vector3.down;
         RaycastHit hitInfo;
         if (Vector3.Distance(handPos, torsoPos) > Vector3.Distance(oldHandPos, torsoPos))
         {

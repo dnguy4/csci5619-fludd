@@ -30,11 +30,6 @@ public class QuadMenu : MonoBehaviour
 
     void Start()
     {
-        //Just have predefined positions in each quad. We can use 4 positions per quad for now
-        // Point to object inside menu to select immediately? or just refine until 1 per quad?
-        // XR socket interactor might be good fit
-        // https://docs.unity3d.com/Packages/com.unity.xr.interaction.toolkit@0.0/api/UnityEngine.XR.Interaction.Toolkit.XRSocketInteractor.html
-
         quads = new List<Selectable>[4];
         for (int i=0; i<4; i++)
         {
@@ -99,6 +94,21 @@ public class QuadMenu : MonoBehaviour
                 int verticalOffset = j / 4;
                 GO.transform.localPosition = new Vector3(-30 + 15 * horizontalOffset, 7 - verticalOffset * 14, 0);
             }
+        }
+    }
+
+    public void ClearQuads()
+    {
+        for (int j = 0; j < 4; j++)
+        {
+            foreach (Selectable s in quads[j])
+            {
+                s.obj.transform.parent = s.initialParent;
+                s.obj.transform.rotation = s.initialRot;
+                s.obj.transform.localScale = s.initialSca;
+                s.obj.transform.position = s.initialPos;
+            }
+            quads[j].Clear();
         }
     }
 
