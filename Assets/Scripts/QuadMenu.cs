@@ -24,6 +24,7 @@ public class QuadMenu : MonoBehaviour
     }
 
     public Transform[] buttons;
+    public GameObject rhand;
     List<Selectable>[] quads;
     Vector3 refSize = new Vector3(0.12f, 0.12f, 0.12f);
 
@@ -121,6 +122,12 @@ public class QuadMenu : MonoBehaviour
         if (quads[i].Count == 1)
         {
             //Finish selection
+            foreach (Selectable s in quads[i]) { 
+                s.obj.transform.parent = rhand.transform;
+                s.obj.transform.rotation = s.initialRot;
+                s.obj.transform.localScale = s.initialSca;
+                s.obj.transform.position = rhand.transform.position;
+            }
         }
         else
         {

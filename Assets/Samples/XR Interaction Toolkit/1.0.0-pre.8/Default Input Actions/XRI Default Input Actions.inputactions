@@ -606,7 +606,7 @@
                     "interactions": ""
                 },
                 {
-                    "name": "X Button",
+                    "name": "Rtrig",
                     "type": "Button",
                     "id": "4d3940f6-1ec8-4baa-aa3a-ad717051d1f4",
                     "expectedControlType": "Button",
@@ -926,11 +926,11 @@
                 {
                     "name": "",
                     "id": "a4569ed6-c748-475f-8fb1-e298e68c5228",
-                    "path": "<XRController>{RightHand}/primaryButton",
+                    "path": "<XRController>{RightHand}/triggerPressed",
                     "interactions": "",
                     "processors": "",
                     "groups": "Generic XR Controller",
-                    "action": "X Button",
+                    "action": "Rtrig",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
