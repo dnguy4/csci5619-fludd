@@ -35,7 +35,7 @@ public class QuadMenu : MonoBehaviour
         {
             quads[i] = new List<Selectable>();
         }
-
+        gameObject.SetActive(false); //Hide menu
     }
 
     public void PopulateQuads(List<GameObject> objs)
@@ -60,13 +60,19 @@ public class QuadMenu : MonoBehaviour
             // Set scale and rotation for proper display
             objs[i].transform.localRotation = Quaternion.Euler(new Vector3(0, 0, 0));
             objs[i].transform.localScale = newScale;
+
+            Rigidbody rb = objs[i].GetComponent<Rigidbody>();
+            if (rb)
+                rb.useGravity = false;
+            s.obj.GetComponent<Collider>().enabled = false;
         }
     }
 
     public void ResizeGameobject(GameObject go, Vector3 refSize)
     {
         //refSize should be defined in the coordinate space go is in
-        Vector3 oldSize = go.GetComponent<Renderer>().bounds.size;
+        //Vector3 oldSize = go.GetComponent<Renderer>().bounds.size;
+        Vector3 oldSize = go.GetComponent<Collider>().bounds.size;
         float resizeX = refSize.x / oldSize.x;
         float resizeY = refSize.y / oldSize.y;
         float resizeZ = refSize.z / oldSize.z;
@@ -97,39 +103,34 @@ public class QuadMenu : MonoBehaviour
         }
     }
 
-    public void ClearQuads()
+    public void ClearQuads(int i)
     {
+        // Clear quads not equal to i
         for (int j = 0; j < 4; j++)
         {
-            foreach (Selectable s in quads[j])
+            if (j != i)
             {
-                s.obj.transform.parent = s.initialParent;
-                s.obj.transform.rotation = s.initialRot;
-                s.obj.transform.localScale = s.initialSca;
-                s.obj.transform.position = s.initialPos;
+                foreach (Selectable s in quads[j].AsNotNull())
+                {
+                    s.obj.transform.parent = s.initialParent;
+                    s.obj.transform.rotation = s.initialRot;
+                    s.obj.transform.localScale = s.initialSca;
+                    s.obj.transform.position = s.initialPos;
+
+                    Rigidbody rb = s.obj.GetComponent<Rigidbody>();
+                    if (rb)
+                        rb.useGravity = true;
+                    s.obj.GetComponent<Collider>().enabled = true;
+                }
+                quads[j].Clear();
             }
-            quads[j].Clear();
         }
     }
 
     //Add onHover event to do the selection instead of clicking?
     public void OnButtonClick(int i)
     {
-        for (int j = 0; j < 4; j++)
-        {
-            if (j != i)
-            {
-                foreach (Selectable s in quads[j])
-                {
-                    s.obj.transform.parent = s.initialParent;
-                    s.obj.transform.rotation = s.initialRot;
-                    s.obj.transform.localScale = s.initialSca;
-                    s.obj.transform.position = s.initialPos;
-                }
-                quads[j].Clear();
-            }
-        }
-
+        ClearQuads(i);
         if (quads[i].Count == 1)
         {
             //Finish selection

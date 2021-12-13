@@ -4,9 +4,10 @@ using UnityEngine.InputSystem;
 public class GraspGrabberRight : Grabber
 {
     public InputActionProperty grabAction;
+    public Grabbable grabbedObject;
 
     Grabbable currentObject;
-    public Grabbable grabbedObject;
+    Transform initialParent;
     bool triggerPressed;
 
     // Start is called before the first frame update
@@ -62,6 +63,7 @@ public class GraspGrabberRight : Grabber
     public void GrabObject(GameObject other)
     {
         other.transform.position = transform.position;
+        currentObject = other.GetComponent<Grabbable>();
         Release(new InputAction.CallbackContext());
         Grab(new InputAction.CallbackContext());
     }
@@ -84,6 +86,7 @@ public class GraspGrabberRight : Grabber
                 grabbedObject.GetComponent<Rigidbody>().useGravity = false;
             }
 
+            initialParent = grabbedObject.transform.parent;
             grabbedObject.transform.parent = this.transform;
         }
     }
@@ -99,7 +102,7 @@ public class GraspGrabberRight : Grabber
             }
 
             grabbedObject.SetCurrentGrabber(null);
-            grabbedObject.transform.parent = null;
+            grabbedObject.transform.parent = initialParent;
             grabbedObject = null;
         }
     }

@@ -46,20 +46,23 @@ public class ApertureSelector : MonoBehaviour
     public void ToggleFlash(InputAction.CallbackContext context)
     {
         isOn = !isOn;
+        menu.ClearQuads(-1); // Clear all quads
+        menu.gameObject.SetActive(false);
 
-        menu.gameObject.SetActive(!isOn);
-        menu.ClearQuads();
+        rHandGrabber.Release(new InputAction.CallbackContext()); // Drop old obj
 
         if (!isOn) //Just turned off flashlight, doing selection. Replace with Grab button probably
         {
             if (selectionPlane.currentCollisions.Count > 1)
             {
+                menu.gameObject.SetActive(true);
                 menu.PopulateQuads(selectionPlane.currentCollisions.ToList());
             }
             else if (selectionPlane.currentCollisions.Count == 1)
             {
                 //Probably add check if object is grabbable
-                rHandGrabber.GrabObject(selectionPlane.currentCollisions.ToList()[0]);
+                GameObject go = selectionPlane.currentCollisions.ToList()[0];
+                rHandGrabber.GrabObject(go);
             }
         }
         flashlight.gameObject.SetActive(isOn);
@@ -103,7 +106,7 @@ public class ApertureSelector : MonoBehaviour
                 selectionDir, out hitInfo, flashlightSize - selectionDist, layerMask))
             {
                 pos.y = flashlight.transform.InverseTransformPoint(hitInfo.transform.position).y;
-                //Debug.Log(hitInfo.collider.gameObject);
+                //Debug.Log("Hit " + hitInfo.collider.gameObject);
             }
         }
         else
@@ -112,9 +115,10 @@ public class ApertureSelector : MonoBehaviour
                 -selectionDir, out hitInfo, selectionDist, layerMask))
             {
                 pos.y = flashlight.transform.InverseTransformPoint(hitInfo.transform.position).y;
-                //Debug.Log(hitInfo.collider.gameObject);
+                //Debug.Log("Hit " + hitInfo.collider.gameObject);
             }
-        } 
+        }
+        pos.y = Mathf.Max(pos.y, -0.86f); //Make sure in front of controller, potential fix for bug
         selectionPlane.transform.localPosition = pos;
         
     }
