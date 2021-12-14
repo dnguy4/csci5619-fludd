@@ -3,18 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 
 public class ApertureSelector : MonoBehaviour
 {
-    public Cylinder flashlight;
-    public Cylinder selectionPlane;
+    public Cylinder flashlight, selectionPlane;
     public InputActionProperty toggleFlashAction;
     public InputActionProperty toggleSpatialMenu;
 
     public Transform leftHand, rightHand, headset;
     public QuadMenu menu;
     public SpatialMenu tooltips;
+    public Slider slider;
 
     GraspGrabberRight rHandGrabber;
     bool isOn = false;
@@ -97,7 +98,14 @@ public class ApertureSelector : MonoBehaviour
             {
                 SnapToNext(handPos);
                 oldHandPos = handPos;
-            }   
+                slider.value = 0.5f;
+            }
+            else
+            {
+                Vector3 torsoPos = headset.position + 0.5f * Vector3.down;
+                float d = Vector3.Distance(handPos, torsoPos) - Vector3.Distance(oldHandPos, torsoPos);
+                slider.value = 0.5f + 8 * d;
+            }
             
         }
 
