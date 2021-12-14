@@ -25,6 +25,7 @@ public class QuadMenu : MonoBehaviour
 
     public Transform[] buttons;
     public GraspGrabberRight rhand;
+
     List<Selectable>[] quads;
     Vector3 refSize = new Vector3(0.12f, 0.12f, 0.12f);
 
@@ -103,6 +104,16 @@ public class QuadMenu : MonoBehaviour
                 GO.transform.localPosition = new Vector3(-30 + 15 * horizontalOffset, 7 - verticalOffset * 14, 0);
             }
         }
+    }
+
+    public bool DoneYet()
+    {
+        for (int i = 0; i < 4; i++)
+        {
+            if (quads[i].Count > 1)
+                return false;
+        }
+        return true;
     }
 
     public void ClearQuads(int i)

@@ -9,8 +9,7 @@ using UnityEngine.UI;
 public class ApertureSelector : MonoBehaviour
 {
     public Cylinder flashlight, selectionPlane;
-    public InputActionProperty toggleFlashAction;
-    public InputActionProperty toggleSpatialMenu;
+    public InputActionProperty toggleFlashAction, toggleSpatialMenu, cancelQuadAction;
 
     public Transform leftHand, rightHand, headset;
     public QuadMenu menu;
@@ -18,7 +17,7 @@ public class ApertureSelector : MonoBehaviour
     public Slider slider;
 
     GraspGrabberRight rHandGrabber;
-    bool isOn = false;
+    int stage = 0; //0 is off, 1 is aperture, 2 is quad
 
     //Spatial Select Params
     Vector3 oldHandPos;
@@ -30,9 +29,10 @@ public class ApertureSelector : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        flashlight.gameObject.SetActive(isOn);
+        flashlight.gameObject.SetActive(false);
         toggleFlashAction.action.performed += ToggleFlash;
         toggleSpatialMenu.action.performed += ToggleMenu;
+        cancelQuadAction.action.performed += CancelQuad;
 
         flashlight.onTriggerEntered += OnFlashlightEnter;
         selectionPlane.onTriggerEntered += ShowOutline;
@@ -48,27 +48,36 @@ public class ApertureSelector : MonoBehaviour
 
     public void ToggleFlash(InputAction.CallbackContext context)
     {
-        isOn = !isOn;
-        menu.ClearQuads(-1); // Clear all quads
-        menu.gameObject.SetActive(false);
-
+        stage = stage + 1;
         rHandGrabber.Release(new InputAction.CallbackContext()); // Drop old obj
-
-        if (!isOn) //Just turned off flashlight, doing selection. Replace with Grab button probably
+        if (stage > 2 && menu.DoneYet())
         {
-            if (selectionPlane.currentCollisions.Count > 1)
+            stage = 0;
+            flashlight.gameObject.SetActive(false);
+        }
+
+        if (stage == 1) { // Just turned on, starting aperture select
+            flashlight.gameObject.SetActive(true);
+        }
+        else if (stage == 2) //Starting progressive refinement
+        {
+            if (selectionPlane.currentCollisions.Count > 1) // Quad Menu needed
             {
                 menu.gameObject.SetActive(true);
                 menu.PopulateQuads(selectionPlane.currentCollisions.ToList());
             }
-            else if (selectionPlane.currentCollisions.Count == 1)
+            else if (selectionPlane.currentCollisions.Count == 1) // No need for quad menu, just grab
             {
-                //Probably add check if object is grabbable
                 GameObject go = selectionPlane.currentCollisions.ToList()[0];
                 rHandGrabber.GrabObject(go);
+                stage = 0; //Reset to off stage
             }
+            else 
+            {
+                stage = 0;
+            }
+            flashlight.gameObject.SetActive(false);
         }
-        flashlight.gameObject.SetActive(isOn);
        
     }
 
@@ -80,9 +89,17 @@ public class ApertureSelector : MonoBehaviour
             tooltips.ShowMenu();
     }
 
+    public void CancelQuad(InputAction.CallbackContext context)
+    {
+        stage = 0;
+        menu.gameObject.SetActive(false);
+        menu.ClearQuads(-1);
+        flashlight.gameObject.SetActive(false);
+    }
+
     void Update()
     {
-        if (isOn)
+        if (stage == 1)
         {
             // Aperture Select - Changing Width based on horizontal distance between hands
             float x = Mathf.Abs(transform.InverseTransformPoint(leftHand.position).x);

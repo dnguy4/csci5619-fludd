@@ -3942,6 +3942,17 @@ MonoBehaviour:
       m_Processors: 
       m_Interactions: 
       m_SingletonActionBindings: []
+    m_Reference: {fileID: -8873886489185320472, guid: c348712bda248c246b8c49b3db54643f, type: 3}
+  cancelQuadAction:
+    m_UseReference: 1
+    m_Action:
+      m_Name: Cancel Quad
+      m_Type: 0
+      m_ExpectedControlType: 
+      m_Id: 55129ddd-9777-4f28-9a78-7ea9e048b64c
+      m_Processors: 
+      m_Interactions: 
+      m_SingletonActionBindings: []
     m_Reference: {fileID: -3385562940701199450, guid: c348712bda248c246b8c49b3db54643f, type: 3}
   leftHand: {fileID: 2061848197}
   rightHand: {fileID: 926079836}
@@ -10316,7 +10327,7 @@ MonoBehaviour:
       m_Processors: 
       m_Interactions: 
       m_SingletonActionBindings: []
-    m_Reference: {fileID: 187161793506945269, guid: c348712bda248c246b8c49b3db54643f, type: 3}
+    m_Reference: {fileID: 3279264004350380116, guid: c348712bda248c246b8c49b3db54643f, type: 3}
   m_HapticDeviceAction:
     m_UseReference: 1
     m_Action:
