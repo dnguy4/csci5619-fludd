@@ -112,7 +112,7 @@ public class QuadMenu : MonoBehaviour
         {
             if (j != i)
             {
-                foreach (Selectable s in quads[j].AsNotNull())
+                foreach (Selectable s in quads[j])
                 {
                     s.obj.transform.parent = s.initialParent;
                     s.obj.transform.rotation = s.initialRot;

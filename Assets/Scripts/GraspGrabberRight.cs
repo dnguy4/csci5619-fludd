@@ -54,6 +54,7 @@ public class GraspGrabberRight : Grabber
             other.transform.parent = selectable.initialParent;
             other.transform.rotation = selectable.initialRot;
             other.transform.localScale = selectable.initialSca;
+            other.GetComponent<Collider>().enabled = true;
 
             // Move to the hand and "grab"
             GrabObject(other);

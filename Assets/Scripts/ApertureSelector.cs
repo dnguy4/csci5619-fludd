@@ -10,11 +10,12 @@ public class ApertureSelector : MonoBehaviour
     public Cylinder flashlight;
     public Cylinder selectionPlane;
     public InputActionProperty toggleFlashAction;
+    public InputActionProperty toggleSpatialMenu;
 
-    public Transform leftHand;
-    public Transform rightHand;
-    public Transform headset;
+    public Transform leftHand, rightHand, headset;
     public QuadMenu menu;
+    public SpatialMenu tooltips;
+
     GraspGrabberRight rHandGrabber;
     bool isOn = false;
 
@@ -30,6 +31,7 @@ public class ApertureSelector : MonoBehaviour
     {
         flashlight.gameObject.SetActive(isOn);
         toggleFlashAction.action.performed += ToggleFlash;
+        toggleSpatialMenu.action.performed += ToggleMenu;
 
         flashlight.onTriggerEntered += OnFlashlightEnter;
         selectionPlane.onTriggerEntered += ShowOutline;
@@ -67,6 +69,14 @@ public class ApertureSelector : MonoBehaviour
         }
         flashlight.gameObject.SetActive(isOn);
        
+    }
+
+    public void ToggleMenu(InputAction.CallbackContext context)
+    {
+        if (tooltips.showing)
+            tooltips.HideMenu();
+        else
+            tooltips.ShowMenu();
     }
 
     void Update()
