@@ -71,11 +71,13 @@ public class QuadMenu : MonoBehaviour
     public void ResizeGameobject(GameObject go, Vector3 refSize)
     {
         //refSize should be defined in the coordinate space go is in
-        //Vector3 oldSize = go.GetComponent<Renderer>().bounds.size;
         Vector3 oldSize = go.GetComponent<Collider>().bounds.size;
-        float resizeX = refSize.x / oldSize.x;
-        float resizeY = refSize.y / oldSize.y;
-        float resizeZ = refSize.z / oldSize.z;
+        if (oldSize.sqrMagnitude < refSize.sqrMagnitude) return;\
+
+        float maxExtent = Mathf.Max(oldSize.x, oldSize.y, oldSize.z);
+        float resizeX = refSize.x / maxExtent;
+        float resizeY = refSize.y / maxExtent;
+        float resizeZ = refSize.z / maxExtent;
 
         resizeX *= go.transform.localScale.x;
         resizeY *= go.transform.localScale.y;

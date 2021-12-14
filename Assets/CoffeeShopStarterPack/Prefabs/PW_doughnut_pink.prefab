@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 64979028713491550}
   - component: {fileID: 4460599475623429663}
   - component: {fileID: 8077280303310269283}
+  - component: {fileID: -5301330872600112402}
   m_Layer: 3
   m_Name: PW_doughnut_pink
   m_TagString: Untagged
@@ -128,3 +129,19 @@ MonoBehaviour:
   precomputeOutline: 0
   bakeKeys: []
   bakeValues: []
+--- !u!54 &-5301330872600112402
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1080854471979460}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 1
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
