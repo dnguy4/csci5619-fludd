@@ -72,7 +72,7 @@ public class QuadMenu : MonoBehaviour
     {
         //refSize should be defined in the coordinate space go is in
         Vector3 oldSize = go.GetComponent<Collider>().bounds.size;
-        if (oldSize.sqrMagnitude < refSize.sqrMagnitude) return;\
+        if (oldSize.sqrMagnitude < refSize.sqrMagnitude) return;
 
         float maxExtent = Mathf.Max(oldSize.x, oldSize.y, oldSize.z);
         float resizeX = refSize.x / maxExtent;
