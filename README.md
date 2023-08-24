@@ -1,4 +1,5 @@
 # csci5619-fludd
+Made by myself and [Ishan](https://github.com/IshanPJoshi). Watch presentation [here](https://www.youtube.com/watch?v=wqAThuCZprA).
 # How to Use FLUDD
 1. Press the trigger button on your righthand controller to start aperture selection
 2. Move left hand closer to or away from right hand to control radius of flashlight selection
